@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 function Product(name, source) {
     this.name = name;
     this.source = source;
@@ -33,19 +31,23 @@ new Product('usb', 'img/usb.gif');
 new Product('water-can', 'img/water-can.jpg');
 new Product('wine-glass', 'img/wine-glass.jpg');
 
-function randomNuberGenerator(min, max) {
+function randomNuberGenerator() {
     return Math.floor(Math.random() * (Product.prototype.allProducts.length));
 
 }
-console.log(Product.prototype.allProducts);
+
 
 var leftImageElement = document.getElementById('left-image');
 var centerImageElement = document.getElementById('center-image');
 var rightImageElement = document.getElementById('right-image');
-
+var imageDiv =document.getElementById('images-div');
+var showResultsInButton =document.getElementById('final-res');
+var maxRoundForms = document.getElementById('max-rounds');
 var leftImageIndex;
 var centerImageIndex;
 var rightImageIndex;
+var maxClickUser = 25;
+var userClickCounter = 0;
 
 
 function renderThreeRandomImages() {
@@ -57,36 +59,39 @@ function renderThreeRandomImages() {
     } while (leftImageIndex === rightImageIndex || leftImageIndex === centerImageIndex || centerImageIndex === rightImageIndex);
 
     leftImageElement.src = Product.prototype.allProducts[leftImageIndex].source;
+    Product.prototype.allProducts[leftImageIndex].view++;
     centerImageElement.src = Product.prototype.allProducts[centerImageIndex].source;
+    Product.prototype.allProducts[centerImageIndex].view++;
     rightImageElement.src = Product.prototype.allProducts[rightImageIndex].source;
+    Product.prototype.allProducts[rightImageIndex].view++;
 }
 
 renderThreeRandomImages();
 
+imageDiv.addEventListener('click',clickByUser);
+showResultsInButton.addEventListener('click',showResults);
+maxRoundForms.addEventListener('submit',setMaxUserRounds);
 
-leftImageElement.addEventListener('click', clickByUser);
-centerImageElement.addEventListener('click', clickByUser);
-rightImageElement.addEventListener('click', clickByUser);
 
-var maxClickUser = 25;
-var userClickCounter = 0;
+
 
 function clickByUser(event) {
     
     userClickCounter++;
 
     if (userClickCounter <= maxClickUser) {
-        Product.prototype.allProducts[leftImageIndex].view++;
-        Product.prototype.allProducts[centerImageIndex].view++;
-        Product.prototype.allProducts[rightImageIndex].view++;
+        
         if (event.target.id === 'left-image') {
+            userClickCounter++
             Product.prototype.allProducts[leftImageIndex].vote++;
             renderThreeRandomImages();
 
         } else if (event.target.id === 'center-image') {
+            userClickCounter++
             Product.prototype.allProducts[centerImageIndex].vote++;
             renderThreeRandomImages();
         } else if (event.target.id === 'right-image') {
+            userClickCounter++
             Product.prototype.allProducts[rightImageIndex].vote++;
             renderThreeRandomImages();
         }
@@ -94,26 +99,30 @@ function clickByUser(event) {
       
 
     }else {
-        var resultsList = document.getElementById('final-results');
-        console.log('final-results',resultsList);
-        
-        var endResult;
-        for (var i = 0; i < Product.prototype.allProducts.length; i++) {
-            endResult = document.createElement('li');
-            endResult.textContent = Product.prototype.allProducts[i].name + 'had '+ Product.prototype.allProducts[i].vote+ ' votes , and was seen '+  Product.prototype.allProducts[i].view +'times.';
-            resultsList.appendChild(endResult);
-        }
-        rightImageElement.removeEventListener('click', clickByUser);
-        centerImageElement.removeEventListener('click', clickByUser);
-        leftImageElement.removeEventListener('click', clickByUser);
-
+        imageDiv.removeEventListener('click',clickByUser);
+        showResultsInButton.disabled=false;
     }
 
     
 }
 
+function showResults() {
+     var resultsList = document.getElementById('final-results');
+       
+        
+        var endResult;
+        for (var i = 0; i < Product.prototype.allProducts.length; i++) {
+            endResult = document.createElement('li');
+            endResult.textContent = Product.prototype.allProducts[i].name + 'had '+ Product.prototype.allProducts[i].vote+ ' votes , and was seen '+  Product.prototype.allProducts[i].view +'times.'
+            resultsList.appendChild(endResult);
+        }
 
-
+}
+ 
+function setMaxUserRounds(event){
+    event.preventDefault();
+    maxClickUser=event.target.rounds.value;
+}
 
 
 
