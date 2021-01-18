@@ -1,4 +1,6 @@
 'use strict';
+var ProductImages = [];
+var votesArr = [];
 
 function Product(name, source) {
     this.name = name;
@@ -6,6 +8,7 @@ function Product(name, source) {
     this.vote = 0;
     this.view = 0;
     Product.prototype.allProducts.push(this);
+    ProductImages.push(name);
 }
 
 Product.prototype.allProducts = [];
@@ -40,23 +43,27 @@ function randomNuberGenerator() {
 var leftImageElement = document.getElementById('left-image');
 var centerImageElement = document.getElementById('center-image');
 var rightImageElement = document.getElementById('right-image');
-var imageDiv =document.getElementById('images-div');
-var showResultsInButton =document.getElementById('final-res');
+var imageDiv = document.getElementById('images-div');
+var showResultsInButton = document.getElementById('final-res');
 var maxRoundForms = document.getElementById('max-rounds');
 var leftImageIndex;
 var centerImageIndex;
 var rightImageIndex;
 var maxClickUser = 25;
 var userClickCounter = 0;
+var perviousImages = [];
 
 
 function renderThreeRandomImages() {
-    leftImageIndex = randomNuberGenerator();
-
     do {
+        leftImageIndex = randomNuberGenerator();
         rightImageIndex = randomNuberGenerator();
         centerImageIndex = randomNuberGenerator();
-    } while (leftImageIndex === rightImageIndex || leftImageIndex === centerImageIndex || centerImageIndex === rightImageIndex);
+    } while (leftImageIndex === rightImageIndex || leftImageIndex === centerImageIndex || centerImageIndex === rightImageIndex || perviousImages.includes(leftImageIndex) || perviousImages.includes(rightImageIndex) || perviousImages.includes(centerImageIndex));
+    
+    perviousImages = [leftImageIndex, rightImageIndex, centerImageIndex]
+    
+
 
     leftImageElement.src = Product.prototype.allProducts[leftImageIndex].source;
     Product.prototype.allProducts[leftImageIndex].view++;
@@ -68,19 +75,17 @@ function renderThreeRandomImages() {
 
 renderThreeRandomImages();
 
-imageDiv.addEventListener('click',clickByUser);
-showResultsInButton.addEventListener('click',showResults);
-maxRoundForms.addEventListener('submit',setMaxUserRounds);
+imageDiv.addEventListener('click', clickByUser);
+showResultsInButton.addEventListener('click', showResults);
+maxRoundForms.addEventListener('submit', setMaxUserRounds);
 
 
 
 
 function clickByUser(event) {
-    
-    userClickCounter++;
 
-    if (userClickCounter <= maxClickUser) {
-        
+    if (userClickCounter < maxClickUser) {
+
         if (event.target.id === 'left-image') {
             userClickCounter++
             Product.prototype.allProducts[leftImageIndex].vote++;
@@ -95,34 +100,71 @@ function clickByUser(event) {
             Product.prototype.allProducts[rightImageIndex].vote++;
             renderThreeRandomImages();
         }
-        
-      
 
-    }else {
-        imageDiv.removeEventListener('click',clickByUser);
-        showResultsInButton.disabled=false;
+
+
+    } else {
+        imageDiv.removeEventListener('click', clickByUser);
+        showResultsInButton.disabled = false;
+
     }
 
-    
 }
 
 function showResults() {
-     var resultsList = document.getElementById('final-results');
-       
-        
-        var endResult;
-        for (var i = 0; i < Product.prototype.allProducts.length; i++) {
-            endResult = document.createElement('li');
-            endResult.textContent = Product.prototype.allProducts[i].name + 'had '+ Product.prototype.allProducts[i].vote+ ' votes , and was seen '+  Product.prototype.allProducts[i].view +'times.'
-            resultsList.appendChild(endResult);
-        }
+    var resultsList = document.getElementById('final-results');
+    chartResults()
+
+    var endResult;
+    for (var i = 0; i < Product.prototype.allProducts.length; i++) {
+        endResult = document.createElement('li');
+        endResult.textContent = Product.prototype.allProducts[i].name + 'had ' + Product.prototype.allProducts[i].vote + ' votes , and was seen ' + Product.prototype.allProducts[i].view + 'times.'
+        resultsList.appendChild(endResult);
+
+
+    }
 
 }
- 
-function setMaxUserRounds(event){
+
+
+
+function setMaxUserRounds(event) {
     event.preventDefault();
-    maxClickUser=event.target.rounds.value;
+    maxClickUser = event.target.rounds.value;
 }
 
 
+
+
+
+function chartResults() {
+    for (var i = 0; i < Product.prototype.allProducts.length; i++) {
+        votesArr.push(Product.prototype.allProducts[i].vote);
+    }
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
+
+
+        // The data for our dataset
+        data: {
+            labels: ProductImages,
+            datasets: [{
+                label: 'Your Resutls',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: votesArr,
+                
+
+
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+}
 

@@ -8,8 +8,9 @@ img {
 }
 body {
     height: 100%;
-  margin: 0;
-  background-color:white;
+    width: 100%;
+    margin: 0;
+    background-color:white;
 }
 header{
     background-color: #c1a1d3;
