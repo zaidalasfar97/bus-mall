@@ -1,6 +1,7 @@
 'use strict';
 var ProductImages = [];
 var votesArr = [];
+var viewArr = [];
 
 function Product(name, source) {
     this.name = name;
@@ -118,7 +119,7 @@ function showResults() {
     var endResult;
     for (var i = 0; i < Product.prototype.allProducts.length; i++) {
         endResult = document.createElement('li');
-        endResult.textContent = Product.prototype.allProducts[i].name + 'had ' + Product.prototype.allProducts[i].vote + ' votes , and was seen ' + Product.prototype.allProducts[i].view + 'times.'
+        endResult.textContent = Product.prototype.allProducts[i].name + 'had ' + Product.prototype.allProducts[i].vote + ' votes , and was seen ' + Product.prototype.allProducts[i].view + ' times.'
         resultsList.appendChild(endResult);
 
 
@@ -140,6 +141,8 @@ function setMaxUserRounds(event) {
 function chartResults() {
     for (var i = 0; i < Product.prototype.allProducts.length; i++) {
         votesArr.push(Product.prototype.allProducts[i].vote);
+        viewArr.push(Product.prototype.allProducts[i].view);
+
     }
 
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -159,12 +162,36 @@ function chartResults() {
                 
 
 
-            }]
+            },
+            {
+                label: 'Your view',
+                backgroundColor: 'rgb(0, 0, 0)',
+                borderColor: 'rgb(0, 0, 0)',
+                data: viewArr,
+            }
+        ]
         },
 
         // Configuration options go here
-        options: {}
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        max: 10,
+                        min: 0,
+                        beginAtZero: 0,
+                        stepSize: 1,
+                    }
+                }],
+
+            }
+        }
     });
+   
+
 
 }
+
+
+
 
