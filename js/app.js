@@ -47,6 +47,7 @@ var rightImageElement = document.getElementById('right-image');
 var imageDiv = document.getElementById('images-div');
 var showResultsInButton = document.getElementById('final-res');
 var maxRoundForms = document.getElementById('max-rounds');
+var bodyLoad = document.getElementById('onClickReload');
 var leftImageIndex;
 var centerImageIndex;
 var rightImageIndex;
@@ -79,6 +80,8 @@ renderThreeRandomImages();
 imageDiv.addEventListener('click', clickByUser);
 showResultsInButton.addEventListener('click', showResults);
 maxRoundForms.addEventListener('submit', setMaxUserRounds);
+window.addEventListener('load', getBodayData);
+
 
 
 
@@ -105,10 +108,13 @@ function clickByUser(event) {
 
 
     } else {
+       // getBodayData();
         imageDiv.removeEventListener('click', clickByUser);
         showResultsInButton.disabled = false;
+        
 
     }
+    
 
 }
 
@@ -124,6 +130,8 @@ function showResults() {
 
 
     }
+    saveOldData();
+    
 
 }
 
@@ -192,6 +200,17 @@ function chartResults() {
 
 }
 
+function saveOldData(){
+    var oldData = JSON.stringify(Product.prototype.allProducts);
+    localStorage.setItem('old',oldData);
+}
 
+function getData(){
+    var getOldData = JSON.parse(localStorage.getItem('old'));
+    return getOldData;
 
-
+}
+ function getBodayData() {
+     console.log('load page')
+     console.log("data", getData());
+ }
