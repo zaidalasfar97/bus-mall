@@ -1,5 +1,7 @@
 'use strict';
+// array save all the poducts names
 var ProductImages = [];
+// array save all final votes and views 
 var votesArr = [];
 var viewArr = [];
 
@@ -12,7 +14,13 @@ function Product(name, source) {
     ProductImages.push(name);
 }
 
+// all the products properties
+// I can do the arrays as I want 
+// 1. arrayname=[]
+// 2. Product.arrayname=[]
+// 3. Product.prototype.allProducts=[]
 Product.prototype.allProducts = [];
+
 // create objects 
 new Product('bag', 'img/bag.jpg');
 new Product('banana', 'img/banana.jpg');
@@ -35,9 +43,9 @@ new Product('usb', 'img/usb.gif');
 new Product('water-can', 'img/water-can.jpg');
 new Product('wine-glass', 'img/wine-glass.jpg');
 
+
 function randomNuberGenerator() {
     return Math.floor(Math.random() * (Product.prototype.allProducts.length));
-
 }
 
 
@@ -62,9 +70,9 @@ function renderThreeRandomImages() {
         rightImageIndex = randomNuberGenerator();
         centerImageIndex = randomNuberGenerator();
     } while (leftImageIndex === rightImageIndex || leftImageIndex === centerImageIndex || centerImageIndex === rightImageIndex || perviousImages.includes(leftImageIndex) || perviousImages.includes(rightImageIndex) || perviousImages.includes(centerImageIndex));
-    
+
     perviousImages = [leftImageIndex, rightImageIndex, centerImageIndex]
-    
+
 
 
     leftImageElement.src = Product.prototype.allProducts[leftImageIndex].source;
@@ -80,8 +88,6 @@ renderThreeRandomImages();
 imageDiv.addEventListener('click', clickByUser);
 showResultsInButton.addEventListener('click', showResults);
 maxRoundForms.addEventListener('submit', setMaxUserRounds);
-window.addEventListener('load', getBodayData);
-
 
 
 
@@ -91,36 +97,45 @@ function clickByUser(event) {
     if (userClickCounter < maxClickUser) {
 
         if (event.target.id === 'left-image') {
-            userClickCounter++
+            userClickCounter++;
             Product.prototype.allProducts[leftImageIndex].vote++;
             renderThreeRandomImages();
 
         } else if (event.target.id === 'center-image') {
-            userClickCounter++
+            userClickCounter++;
             Product.prototype.allProducts[centerImageIndex].vote++;
             renderThreeRandomImages();
         } else if (event.target.id === 'right-image') {
-            userClickCounter++
+            userClickCounter++;
             Product.prototype.allProducts[rightImageIndex].vote++;
             renderThreeRandomImages();
         }
 
-
-
     } else {
-       // getBodayData();
         imageDiv.removeEventListener('click', clickByUser);
         showResultsInButton.disabled = false;
-        
+
+        var storageData = [];
+
+        for (var i = 0; i < Product.prototype.allProducts.length; i++) {
+            var vote = Product.prototype.allProducts[i].vote;
+            var view = Product.prototype.allProducts[i].view;
+            storageData.push({ "vote": vote, "view": view });
+            
+        }console.log(storageData);
+
 
     }
+    localStorage.setItem('voteData', JSON.stringify(storageData));
     
 
 }
 
 function showResults() {
     var resultsList = document.getElementById('final-results');
+
     chartResults()
+
 
     var endResult;
     for (var i = 0; i < Product.prototype.allProducts.length; i++) {
@@ -130,8 +145,8 @@ function showResults() {
 
 
     }
-    saveOldData();
-    
+
+
 
 }
 
@@ -167,7 +182,7 @@ function chartResults() {
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
                 data: votesArr,
-                
+
 
 
             },
@@ -177,7 +192,7 @@ function chartResults() {
                 borderColor: 'rgb(0, 0, 0)',
                 data: viewArr,
             }
-        ]
+            ]
         },
 
         // Configuration options go here
@@ -185,32 +200,30 @@ function chartResults() {
             scales: {
                 yAxes: [{
                     ticks: {
-                        max: 10,
+                        max: 50,
                         min: 0,
                         beginAtZero: 0,
-                        stepSize: 1,
+                        stepSize: 5,
                     }
                 }],
 
             }
         }
     });
-   
 
 
-}
-
-function saveOldData(){
-    var oldData = JSON.stringify(Product.prototype.allProducts);
-    localStorage.setItem('old',oldData);
-}
-
-function getData(){
-    var getOldData = JSON.parse(localStorage.getItem('old'));
-    return getOldData;
 
 }
- function getBodayData() {
-     console.log('load page')
-     console.log("data", getData());
- }
+
+function getTheData() {
+    var oldData = JSON.parse(localStorage.getItem('voteData'));
+
+    for (var i = 0; i < Product.prototype.allProducts.length; i++) {
+        Product.prototype.allProducts[i].vote = oldData[i].vote;
+        Product.prototype.allProducts[i].view = oldData[i].view;
+    }
+
+}
+getTheData();
+
+
