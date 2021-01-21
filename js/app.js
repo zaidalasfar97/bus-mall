@@ -55,7 +55,6 @@ var rightImageElement = document.getElementById('right-image');
 var imageDiv = document.getElementById('images-div');
 var showResultsInButton = document.getElementById('final-res');
 var maxRoundForms = document.getElementById('max-rounds');
-var bodyLoad = document.getElementById('onClickReload');
 var leftImageIndex;
 var centerImageIndex;
 var rightImageIndex;
