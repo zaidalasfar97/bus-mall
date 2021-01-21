@@ -1,4 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital,wght@0,700;1,700&display=swap');
+header img{
+    position: absolute;
+    display: inline-block;
+    margin-left: 1000px;
+    margin-top: 0;
+    border-radius: 30px;
+    border:10px solid black ;
+}
 img {
     width: 200px;
     height: 200px;
@@ -19,12 +27,13 @@ main{
     background-color: #c1a1d3;
 }
 h1{
-    display: inline;
+    display: inline-block;
+    border: 5px solid black;
     margin: 50px 50px;
     
 }
 h2{
-    display: inline;
+    display: inline-block;
     margin: 30px 500px;
    
 }
